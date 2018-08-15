@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "charts.fullname" . }}
+spec:
+  template:
+    spec:
+      containers:
+      - name: {{ template "charts.name" . }}
+#       ### BEGIN KSYNC SECTION
+#       command: ['/bin/sh']
+#       args: ['-c', 'python main.py; tail -f /dev/null']
+#       ### END KSYNC SECTION
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        env:
+        - name: GREETING
+          value: {{ .Values.greeting }}
+      restartPolicy: Never
+  # TODO: discovered why this doesn't work in kubernetes 1.10.2
+  # https://github.com/kubernetes/kubernetes/issues/62382 it's a bug
+  # fixed in 1.10.5 though
+  backoffLimit: 4
