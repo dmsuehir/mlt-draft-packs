@@ -1,0 +1,38 @@
+apiVersion: "kubeflow.org/v1alpha1"
+kind: TFJob
+metadata:
+  name: {{ template "charts.fullname" . }}
+  labels:
+    app: {{ template "charts.name" . }}
+    chart: {{ template "charts.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicaSpecs:
+    - replicas: {{ .Values.psCount }}
+      tfReplicaType: PS
+      template:
+        spec:
+          containers:
+            - image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}    
+              name: tensorflow
+          restartPolicy: OnFailure
+    - replicas: {{ .Values.masterCount }}
+      tfReplicaType: MASTER
+      template:
+        spec:
+          containers:
+            - image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              name: tensorflow
+          restartPolicy: OnFailure
+    - replicas: {{ .Values.workersCount }}
+      tfReplicaType: WORKER
+      template:
+        spec:
+          containers:
+            - image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              name: tensorflow
+          restartPolicy: OnFailure
