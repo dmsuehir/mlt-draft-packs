@@ -1,0 +1,15 @@
+# Default values for tf-dist-mnist.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+psCount: 1
+workersCount: 2
+
+image:
+  pullPolicy: IfNotPresent
+
+service:
+  type: TFJob
+
+ingress:
+  enabled: False
