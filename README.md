@@ -76,6 +76,16 @@ copied the packs into draft's cache (for me, this was in
 `/Users/dmsuehir/.draft`).  If this is done properly, you should see
 them in your `draft pack list`.
 
+If you haven't already, configure draft with your docker registry:
+
+```
+$ draft config set registry gcr.io/<gcr-project>
+
+$ draft config list
+KEY     	VALUE
+registry	gcr.io/<gcr-project>
+```
+
 Draft expects that you are starting out with a project directory that
 contains your code files.  For `mlt-draft-packs`, this the code found
 in the `mlt-draft-packs/examples` directory.  Here is an example of how
