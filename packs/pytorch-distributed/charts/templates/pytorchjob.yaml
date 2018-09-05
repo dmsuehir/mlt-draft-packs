@@ -1,0 +1,38 @@
+apiVersion: "kubeflow.org/v1alpha1"
+kind: "PyTorchJob"
+metadata:
+  name: {{ template "charts.fullname" . }}
+  labels:
+    app: {{ template "name" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  backend: "tcp"
+  masterPort: "23456"
+  replicaSpecs:
+    - replicas: 1
+      replicaType: MASTER
+      template:
+        spec:
+          containers:
+          - image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+            imagePullPolicy: {{ .Values.image.pullPolicy }}
+            name: pytorch
+#           ### BEGIN KSYNC SECTION
+#           command: ['/bin/sh']
+#           args: ['-c', 'python main.py; tail -f /dev/null']
+#           ### END KSYNC SECTION
+          restartPolicy: OnFailure
+    - replicas: {{ .Values.workersCount }}
+      replicaType: WORKER
+      template:
+        spec:
+          containers:
+          - image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+            imagePullPolicy: {{ .Values.image.pullPolicy }}
+            name: pytorch
+#           ### BEGIN KSYNC SECTION
+#           command: ['/bin/sh']
+#           args: ['-c', 'python main.py; tail -f /dev/null']
+#           ### END KSYNC SECTION
+          restartPolicy: OnFailure
