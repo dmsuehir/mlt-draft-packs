@@ -1,0 +1,14 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "charts.fullname" . }}
+spec:
+  template:
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: Always
+        command: ["/src/app/experiments/optimizer.py", "--namespace", {{ .Release.Namespace }}, "--experiment-name", {{ template "charts.fullname" . }}]
+      restartPolicy: Never
+

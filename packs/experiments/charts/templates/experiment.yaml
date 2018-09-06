@@ -1,0 +1,23 @@
+apiVersion: "ml.intel.com/v1"
+kind: Experiment
+metadata:
+  name: {{ template "charts.fullname" . }}
+spec:
+  parameters:
+    "x": [true, false]
+    "y": [256, 512]
+  jobSpec:
+    template:
+      spec:
+        containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: Always
+          command: ["/src/app/experiments/job.py"]
+          env:
+          - name: EXPERIMENT_NAMESPACE
+            value: {{ .Release.Namespace }}
+          - name: JOB_NAME
+            value: {{ template "charts.fullname" . }}
+        restartPolicy: Never
+    backoffLimit: 4
