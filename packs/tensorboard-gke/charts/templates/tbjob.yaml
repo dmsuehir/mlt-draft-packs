@@ -1,0 +1,30 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "charts.fullname" . }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        mlt-app-name: {{ .Chart.Name }}
+    spec:
+      containers:
+        - image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          name: tensorflow
+          command : ["/bin/sh"]
+          args : ["-c", "tensorboard --logdir {{ .Values.logdir }}"]
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "charts.fullname" . }}
+spec:
+  ports:
+     -  port: 6006
+        protocol: TCP
+        targetPort: 6006
+  selector:
+    mlt-app-name: {{ .Chart.Name }}
+  type: LoadBalancer
