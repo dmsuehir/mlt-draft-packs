@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "charts.fullname" . }}
+  labels:
+    mlt-app-name: {{ .Chart.Name }}
+spec:
+  completions: 1
+  parallelism: 1
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - image: $"{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          name: pytorch
+#         ### BEGIN KSYNC SECTION
+#         command: ['/bin/sh']
+#         args: ['-c', 'python main.py; tail -f /dev/null']
+#         ### END KSYNC SECTION
+          resources:
+            limits:
+              memory: "200Mi"
+              cpu: ".1"
